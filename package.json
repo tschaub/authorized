@@ -1,0 +1,16 @@
+{
+  "name": "authorized",
+  "version": "0.0.0",
+  "description": "Action based authorization middleware.",
+  "licenses": [
+    {"type": "MIT", "url": "http://tschaub.mit-license.org/"}
+  ],
+  "homepage": "https://github.com/tschaub/authorized",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/tschaub/authorized.git"
+  },
+  "bugs": {
+    "url" : "https://github.com/tschaub/authorized/issues"
+  }
+}
