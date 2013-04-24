@@ -2,12 +2,17 @@
   "name": "authorized",
   "version": "0.1.0",
   "description": "Action based authorization middleware.",
+  "keywords": ["auth", "authorization", "security", "roles", "express", "connect"],
   "licenses": [
     {
       "type": "MIT",
       "url": "http://tschaub.mit-license.org/"
     }
   ],
+  "author": {
+    "name": "Tim Schaub",
+    "url": "http://tschaub.net/"
+  },
   "homepage": "https://github.com/tschaub/authorized",
   "repository": {
     "type": "git",
