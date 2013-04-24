@@ -1,4 +1,6 @@
 var chai = require('chai');
+
+var ConfigError = require('authorized').ConfigError;
 var Role = require('authorized').Role;
 
 
@@ -88,11 +90,11 @@ describe('Role', function() {
     });
 
     it('is not optional (in the string)', function() {
-      assert.throws(function() {new Role('')}, Error);
+      assert.throws(function() {new Role('')}, ConfigError);
     });
 
     it('is not optional (in the config object)', function() {
-      assert.throws(function() {new Role({entity: 'orphan'})}, Error);
+      assert.throws(function() {new Role({entity: 'orphan'})}, ConfigError);
     });
 
   });

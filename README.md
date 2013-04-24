@@ -13,6 +13,8 @@ Import an authorization manager.
 var auth = require('authorized');
 ```
 
+### Roles
+
 Provide getters for your application roles.
 
 ```js
@@ -34,6 +36,8 @@ auth.role('organization.owner', function(org, req, done) {
 });
 ```
 
+### Entities
+
 Provide getters for your application entities.
 
 ```js
@@ -52,11 +56,22 @@ auth.entity('organization', function(req, done) {
 });
 ```
 
+### Actions
+
 Now define what roles are required for your actions.
 
 ```js
 auth.action('add members to organization', ['admin', 'organization.owner']);
 ```
+
+To perform the provided action, a user must have at least one of the given
+roles.  In this case, a user must be `admin` or `organization.owner` to add
+members to an organization.
+
+Note that entity and role getters can be added in any order, but you cannot
+configure actions until all entity and role getters have been added.
+
+### Middleware
 
 Now you're ready to generate authorization middleware.
 
@@ -82,6 +97,23 @@ app.post(
       assert.strictEqual(view.roles['organization.owner'], true);
       assert.strictEqual(view.actions['add members to organization'], true);
     });
+```
+
+### Handling unauthorized actions
+
+If the auth manager decides a user is not authorized to perform a specific
+action, an `UnauthorizedError` will be passed down the middleware chain.  To
+provide specific handling for this error, configure your application with
+error handling middleware.
+
+```js
+app.use(function(err, req, res, next) {
+  if (err instanceof auth.UnauthorizedError) {
+    res.send(401, 'Unauthorized');
+  } else {
+    next(err);
+  }
+});
 ```
 
 ## What else?
