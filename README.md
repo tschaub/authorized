@@ -1,11 +1,9 @@
 # Authorized!
 **Action based authorization middleware**
 
-The `authorized` package is available on npm.
+The `authorized` package is available on [npm](https://npmjs.org/package/authorized).
 
     $ npm install authorized
-
-[![Current Status](https://secure.travis-ci.org/tschaub/authorized.png?branch=master)](https://travis-ci.org/tschaub/authorized)
 
 ## Quick start
 
@@ -100,3 +98,5 @@ if a user can perform an action synchronously).
 Tests are run with mocha.
 
     npm test
+
+[![Current Status](https://secure.travis-ci.org/tschaub/authorized.png?branch=master)](https://travis-ci.org/tschaub/authorized)
