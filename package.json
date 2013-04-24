@@ -2,7 +2,14 @@
   "name": "authorized",
   "version": "0.1.0",
   "description": "Action based authorization middleware.",
-  "keywords": ["auth", "authorization", "security", "roles", "express", "connect"],
+  "keywords": [
+    "auth",
+    "authorization",
+    "security",
+    "roles",
+    "express",
+    "connect"
+  ],
   "licenses": [
     {
       "type": "MIT",
