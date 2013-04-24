@@ -1,6 +1,11 @@
 var http = require('http');
+
 var chai = require('chai');
+
+var ConfigError = require('authorized').ConfigError;
 var Manager = require('authorized').Manager;
+var Role = require('authorized').Role;
+var UnauthorizedError = require('authorized').UnauthorizedError;
 
 
 /** @type {boolean} */
@@ -19,6 +24,88 @@ describe('Manager', function() {
     it('instance exported by main module', function() {
       var auth = require('authorized');
       assert.instanceOf(auth, Manager);
+    });
+
+  });
+
+  describe('#action()', function() {
+    var auth;
+    beforeEach(function() {
+      auth = new Manager();
+    });
+
+    it('defines roles required for specific actions', function() {
+      auth.role('admin', function(req, done) {
+        // pretend everybody is admin
+        done(null, true);
+      });
+
+      assert.doesNotThrow(function() {
+        auth.action('can view passwords', ['admin']);
+      });
+    });
+
+    it('allows multiple roles to perform an action', function() {
+      auth.role('admin', function(req, done) {
+        // pretend ~1/2 users are admin
+        done(null, Math.random() > 0.5);
+      });
+      auth.role('page.author', function(page, req, done) {
+        // pretend everybody is author
+        done(null, true);
+      });
+      auth.entity('page', function(req, done) {
+        // mock page
+        done(null, {});
+      });
+
+      assert.doesNotThrow(function() {
+        auth.action('can edit page', ['admin', 'page.author']);
+      });
+    });
+
+
+    it('accepts a single action string instead of an array', function() {
+      auth.role('admin', function(req, done) {
+        // pretend everybody is admin
+        done(null, true);
+      });
+
+      assert.doesNotThrow(function() {
+        auth.action('can view passwords', 'admin');
+      });
+    });
+
+    it('does not accept an action with no roles', function() {
+      assert.throws(function() {
+        auth.action('can do nothing', []);
+      });
+    });
+
+    it('requires that all roles have been defined', function() {
+      auth.role('admin', function(req, done) {
+        // pretend everybody is admin
+        done(null, true);
+      });
+
+      assert.throws(function() {
+        auth.action('can view passwords', ['admin', 'foo']);
+      });
+    });
+
+    it('requires that all entities have been defined', function() {
+      auth.role('admin', function(req, done) {
+        // pretend nobody is admin
+        done(null, false);
+      });
+      auth.role('page.author', function(page, req, done) {
+        // pretend everybody is author
+        done(null, true);
+      });
+
+      assert.throws(function() {
+        auth.action('can edit page', ['admin', 'page.author']);
+      });
     });
 
   });
@@ -98,7 +185,7 @@ describe('Manager', function() {
 
       middleware(req, {}, function(err) {
         assert.lengthOf(arguments, 1, 'next called with one argument');
-        assert.instanceOf(err, Error, 'called with an error');
+        assert.instanceOf(err, UnauthorizedError, 'UnauthorizedError');
 
         var view = auth.view(req);
 
@@ -114,6 +201,140 @@ describe('Manager', function() {
       });
     });
 
+    it('requires that an action has been defined', function() {
+      assert.throws(function() {
+        auth.can('do things we know nothing about');
+      });
+    });
+
   });
+
+  describe('#entity()', function() {
+
+    var auth;
+    beforeEach(function() {
+      auth = new Manager();
+    });
+
+    it('registers an entity getter', function() {
+      function getter(req, done) {
+        done(null, {});
+      }
+      assert.doesNotThrow(function() {
+        auth.entity('page', getter);
+      });
+    });
+
+    it('throws ConfigError if type is not a string', function() {
+      function getter(req, done) {
+        done(null, {});
+      }
+      assert.throws(function() {
+        auth.entity(10, getter);
+      }, ConfigError);
+    });
+
+    it('throws ConfigError if getter is not a function', function() {
+      assert.throws(function() {auth.entity('page', 12)}, ConfigError);
+    });
+
+    it('throws ConfigError if role getter arity is not 2', function() {
+      function getter(err) {
+        return;
+      }
+      assert.throws(function() {
+        auth.entity('page', getter);
+      }, ConfigError);
+    });
+
+  });
+
+  describe('#role()', function() {
+
+    var auth;
+    beforeEach(function() {
+      auth = new Manager();
+    });
+
+    it('registers a role getter', function() {
+      function getter(req, done) {
+        return done(null, true);
+      }
+      assert.doesNotThrow(function() {
+        auth.role('admin', getter);
+      });
+    });
+
+    it('accepts a Role instance', function() {
+      function getter(req, done) {
+        return done(null, true);
+      }
+      assert.doesNotThrow(function() {
+        auth.role(new Role('admin'), getter);
+      });
+    });
+
+    it('expects a getter of arity 2 for simple roles', function() {
+      function getter(req, done) {
+        return done(null, true);
+      }
+      assert.doesNotThrow(function() {
+        auth.role('admin', getter);
+      });
+    });
+
+    it('expects a getter of arity 3 for entity roles', function() {
+      function getter(organization, req, done) {
+        return done(null, true);
+      }
+      assert.doesNotThrow(function() {
+        auth.role('organization.admin', getter);
+      });
+    });
+
+    it('throws ConfigError if role is not a string or Role', function() {
+      function getter(req, done) {
+        return done(null, true);
+      }
+      assert.throws(function() {
+        auth.role(10, getter);
+      }, ConfigError);
+    });
+
+    it('throws ConfigError if role cannot be created from string', function() {
+      function getter(req, done) {
+        return done(null, true);
+      }
+      assert.throws(function() {
+        auth.role('foo.bar.bam', getter);
+      }, ConfigError);
+    });
+
+    it('throws ConfigError if getter is not a function', function() {
+      assert.throws(function() {
+        auth.role('admin', 12);
+      }, ConfigError);
+    });
+
+    it('throws ConfigError if simple role getter arity is not 2', function() {
+      function getter(err) {
+        return;
+      }
+      assert.throws(function() {
+        auth.role('adin', getter);
+      }, ConfigError);
+    });
+
+    it('throws ConfigError if entity role getter arity is not 2', function() {
+      function getter(err, done) {
+        return;
+      }
+      assert.throws(function() {
+        auth.role('page.author', getter);
+      }, ConfigError);
+    });
+
+  });
+
 
 });
