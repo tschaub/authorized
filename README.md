@@ -92,10 +92,11 @@ app.post(
       // you can safely let the user add members to the org here
       // you can also access entities, roles, and actions for your view
       var view = auth.view(req);
-      assert.ok(view.entities.organization);
-      assert.strictEqual(view.roles['admin'], false);
-      assert.strictEqual(view.roles['organization.owner'], true);
-      assert.strictEqual(view.actions['add members to organization'], true);
+      assert.ok(view.get('organization'));
+      assert.strictEqual(view.has('admin'), false);
+      assert.strictEqual(view.has('organization.owner'), true);
+      // this is implicit since this middleware is only called if true
+      assert.strictEqual(view.can('add members to organization'), true);
     });
 ```
 
