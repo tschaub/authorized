@@ -1,10 +1,11 @@
 # Authorized!
+**Action based authorization middleware**
 
-** Action based authorization middleware **
-
-The authorized package is available on npm.
+The `authorized` package is available on npm.
 
     $ npm install authorized
+
+[![Current Status](https://secure.travis-ci.org/tschaub/authorized.png?branch=master)](https://travis-ci.org/tschaub/authorized)
 
 ## Quick start
 
