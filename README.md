@@ -97,6 +97,8 @@ app.post(
       assert.strictEqual(view.has('organization.owner'), true);
       // this is implicit since this middleware is only called if true
       assert.strictEqual(view.can('add members to organization'), true);
+      // pretend we added a member to the org
+      res.send(202, 'member added');
     });
 ```
 
