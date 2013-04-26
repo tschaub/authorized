@@ -10,7 +10,7 @@ var UnauthorizedError = require('authorized').UnauthorizedError;
 
 /** @type {boolean} */
 chai.Assertion.includeStack = true;
-assert = chai.assert;
+var assert = chai.assert;
 
 describe('Manager', function() {
 
@@ -165,7 +165,7 @@ describe('Manager', function() {
             'got organization');
         assert.strictEqual(view.roles['organization.owner'], true,
             'is organization.owner');
-        assert.strictEqual(view.roles['admin'], false,
+        assert.strictEqual(view.roles.admin, false,
             'is not admin');
         assert.strictEqual(view.actions['add members to organization'], true,
             'can add members to organization');
@@ -193,7 +193,7 @@ describe('Manager', function() {
             'got organization');
         assert.strictEqual(view.roles['organization.owner'], false,
             'is organization.owner');
-        assert.strictEqual(view.roles['admin'], false,
+        assert.strictEqual(view.roles.admin, false,
             'is not admin');
         assert.strictEqual(view.actions['add members to organization'], false,
             'can add members to organization');
@@ -235,7 +235,7 @@ describe('Manager', function() {
     });
 
     it('throws ConfigError if getter is not a function', function() {
-      assert.throws(function() {auth.entity('page', 12)}, ConfigError);
+      assert.throws(function() {auth.entity('page', 12);}, ConfigError);
     });
 
     it('throws ConfigError if role getter arity is not 2', function() {
