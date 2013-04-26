@@ -6,7 +6,7 @@ var Role = require('authorized').Role;
 
 /** @type {boolean} */
 chai.Assertion.includeStack = true;
-assert = chai.assert;
+var assert = chai.assert;
 
 describe('Role', function() {
 
@@ -90,11 +90,12 @@ describe('Role', function() {
     });
 
     it('is not optional (in the string)', function() {
-      assert.throws(function() {new Role('')}, ConfigError);
+      assert.throws(function() {var role = new Role('');}, ConfigError);
     });
 
     it('is not optional (in the config object)', function() {
-      assert.throws(function() {new Role({entity: 'orphan'})}, ConfigError);
+      assert.throws(function() {var role = new Role({entity: 'orphan'});},
+          ConfigError);
     });
 
   });

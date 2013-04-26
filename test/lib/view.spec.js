@@ -5,7 +5,7 @@ var Role = require('authorized').Role;
 
 /** @type {boolean} */
 chai.Assertion.includeStack = true;
-assert = chai.assert;
+var assert = chai.assert;
 
 describe('View', function() {
 
@@ -84,13 +84,13 @@ describe('View', function() {
 
     it('prevents cached roles from being modified', function() {
       var view = new View();
-      view.roles['admin'] = false;
+      view.roles.admin = false;
       view.roles['page.author'] = true;
       assert.isFalse(view.has('admin'));
       assert.isTrue(view.has('page.author'));
 
       view.freeze();
-      view.roles['admin'] = true;
+      view.roles.admin = true;
       assert.isFalse(view.has('admin'));
 
       view.roles['site.owner'] = true;

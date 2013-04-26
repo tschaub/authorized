@@ -6,7 +6,7 @@ var UnauthorizedError = require('authorized').UnauthorizedError;
 
 /** @type {boolean} */
 chai.Assertion.includeStack = true;
-assert = chai.assert;
+var assert = chai.assert;
 
 describe('ConfigError', function() {
 
