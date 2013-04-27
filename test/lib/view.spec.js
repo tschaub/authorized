@@ -1,6 +1,9 @@
 var chai = require('chai');
-var View = require('authorized').View;
-var Role = require('authorized').Role;
+
+var authorized = require('../../lib/authorized');
+
+var View = authorized.View;
+var Role = authorized.Role;
 
 
 /** @type {boolean} */

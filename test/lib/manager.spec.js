@@ -2,10 +2,12 @@ var EventEmitter = require('events').EventEmitter;
 
 var chai = require('chai');
 
-var ConfigError = require('authorized').ConfigError;
-var Manager = require('authorized').Manager;
-var Role = require('authorized').Role;
-var UnauthorizedError = require('authorized').UnauthorizedError;
+var authorized = require('../../lib/authorized');
+
+var ConfigError = authorized.ConfigError;
+var Manager = authorized.Manager;
+var Role = authorized.Role;
+var UnauthorizedError = authorized.UnauthorizedError;
 
 
 /** @type {boolean} */
@@ -29,7 +31,7 @@ describe('Manager', function() {
     });
 
     it('instance exported by main module', function() {
-      var auth = require('authorized');
+      var auth = require('../../lib/authorized');
       assert.instanceOf(auth, Manager);
     });
 

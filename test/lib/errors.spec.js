@@ -1,7 +1,9 @@
 var chai = require('chai');
 
-var ConfigError = require('authorized').ConfigError;
-var UnauthorizedError = require('authorized').UnauthorizedError;
+var authorized = require('../../lib/authorized');
+
+var ConfigError = authorized.ConfigError;
+var UnauthorizedError = authorized.UnauthorizedError;
 
 
 /** @type {boolean} */

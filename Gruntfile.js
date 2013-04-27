@@ -57,7 +57,7 @@ module.exports = function(grunt) {
         reporter: 'spec'
       },
       all: {
-        src: 'test/**/*.js'
+        src: testSrc
       }
     },
     watch: {
@@ -67,34 +67,20 @@ module.exports = function(grunt) {
       },
       lib: {
         files: libSrc,
-        tasks: ['jshint:lib', 'mocha']
+        tasks: ['jshint:lib', 'cafemocha']
       },
       test: {
         files: testSrc,
-        tasks: ['jshint:test', 'mocha']
-      }
-    },
-    env: {
-      test: {
-        NODE_PATH: 'lib'
+        tasks: ['jshint:test', 'cafemocha']
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-cafe-mocha');
 
-  grunt.registerTask('mocha', 'Run tests with Mocha', function() {
-    var done = this.async();
-    var cmd = 'NODE_PATH=lib node_modules/.bin/mocha test ' +
-        '--reporter spec --recursive';
-    cp.exec(cmd, function(err, stdout) {
-      grunt.log.write(stdout);
-      done(err);
-    });
-  });
-
-  grunt.registerTask('test', ['jshint', 'mocha']);
+  grunt.registerTask('test', ['jshint', 'cafemocha']);
 
   grunt.registerTask('default', ['test']);
 
