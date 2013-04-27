@@ -41,6 +41,7 @@
     "test": "node_modules/.bin/grunt test"
   },
   "dependencies": {
-    "async": "0.2.7"
+    "async": "0.2.7",
+    "pause": "0.0.1"
   }
 }
