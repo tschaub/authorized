@@ -19,6 +19,13 @@ describe('Manager', function() {
     it('creates a new authorization manager with the defaults', function() {
       var auth = new Manager();
       assert.instanceOf(auth, Manager);
+      assert.isTrue(auth.options.pauseStream);
+    });
+
+    it('allows options to be set', function() {
+      var auth = new Manager({pauseStream: false});
+      assert.instanceOf(auth, Manager);
+      assert.isFalse(auth.options.pauseStream);
     });
 
     it('instance exported by main module', function() {
