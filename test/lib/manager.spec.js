@@ -1,4 +1,4 @@
-var http = require('http');
+var EventEmitter = require('events').EventEmitter;
 
 var chai = require('chai');
 
@@ -157,7 +157,7 @@ describe('Manager', function() {
     it('calls next with no args if action is allowed', function(done) {
       var middleware = auth.can('add members to organization');
 
-      var req = new http.IncomingMessage();
+      var req = new EventEmitter();
       req.url = '/org.1';
       req.user = {
         id: 'user.1'
@@ -184,7 +184,7 @@ describe('Manager', function() {
     it('calls next error if action is not allowed', function(done) {
       var middleware = auth.can('add members to organization');
 
-      var req = new http.IncomingMessage();
+      var req = new EventEmitter();
       req.url = '/org.1';
       req.user = {
         id: 'user.2'
