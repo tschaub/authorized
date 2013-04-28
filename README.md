@@ -130,8 +130,14 @@ if a user can perform an action synchronously).
 
 ## Check out the tests for more
 
-Tests are run with mocha.
+See the [unit](test/lib) and [integration](test/integration) tests for more detail on how `authorized` is used.
+
+To run the linter and tests:
 
     npm test
+
+During development, the linter and tests can be run continously:
+
+    npm run watch
 
 [![Current Status](https://secure.travis-ci.org/tschaub/authorized.png?branch=master)](https://travis-ci.org/tschaub/authorized)

@@ -41,7 +41,8 @@
   },
   "main": "./lib/authorized",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "watch": "grunt watch"
   },
   "dependencies": {
     "async": "0.2.7",
