@@ -47,13 +47,10 @@ auth.action('add members to organization', ['admin', 'organization.owner']);
 app.post(
     '/organizations/:orgId/members',
     auth.can('add members to organization'),
+    express.json(),
     function(req, res, next) {
-      // you can safely let the user add members to the org here
-      // you can also access entities, roles, and actions for your view
       var view = auth.view(req);
-      // pretend we added a member to the org
       res.send(202, {
-        message: 'member added',
         roles: view.roles,
         entities: view.entities,
         actions: view.actions
@@ -79,6 +76,11 @@ describe('adding an organization member as organization owner', function() {
         })
       .res(function(res) {
           assert.strictEqual(res.status, 202);
+          var body = res.body;
+          assert.isFalse(body.roles.admin, 'not admin');
+          assert.isTrue(body.roles['organization.owner'], 'org owner');
+          assert.isTrue(
+              body.actions['add members to organization'], 'can add');
         });
 
   });
