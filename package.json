@@ -33,9 +33,11 @@
     "mocha": "1.9.0",
     "grunt": "0.4.1",
     "grunt-contrib-jshint": "0.4.3",
+    "grunt-cafe-mocha": "0.1.2",
     "grunt-contrib-watch": "0.3.1",
     "grunt-cli": "0.1.7",
-    "grunt-cafe-mocha": "0.1.2"
+    "express": "3.2.0",
+    "chai-http": "0.3.0"
   },
   "main": "./lib/authorized",
   "scripts": {
