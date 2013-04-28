@@ -41,7 +41,7 @@
   },
   "main": "./lib/authorized",
   "scripts": {
-    "test": "node_modules/.bin/grunt test"
+    "test": "grunt test"
   },
   "dependencies": {
     "async": "0.2.7",
