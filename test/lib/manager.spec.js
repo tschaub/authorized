@@ -74,7 +74,7 @@ describe('Manager', function() {
     });
 
 
-    it('accepts a single action string instead of an array', function() {
+    it('accepts a single role string instead of an array', function() {
       auth.role('admin', function(req, done) {
         // pretend everybody is admin
         done(null, true);
@@ -150,6 +150,8 @@ describe('Manager', function() {
 
     auth.action('add members to organization', ['admin', 'organization.owner']);
 
+    auth.action('delete organization', ['admin']);
+
     it('creates a middleware function', function() {
       var middleware = auth.can('add members to organization');
       assert.isFunction(middleware, 'is a function');
@@ -178,6 +180,66 @@ describe('Manager', function() {
             'is not admin');
         assert.strictEqual(view.actions['add members to organization'], true,
             'can add members to organization');
+
+        done();
+      });
+    });
+
+    it('calls next if any of the actions can be performed', function(done) {
+      var middleware = auth.can(
+          'add members to organization', 'delete organization');
+
+      var req = new EventEmitter();
+      req.url = '/org.1';
+      req.user = {
+        admin: true
+      };
+
+      middleware(req, {}, function(err) {
+        assert.lengthOf(arguments, 0, 'next called with no arguments');
+
+        var view = auth.view(req);
+
+        assert.strictEqual(view.entities.organization, organizations['org.1'],
+            'got organization');
+        assert.strictEqual(view.roles['organization.owner'], false,
+            'is organization.owner');
+        assert.strictEqual(view.roles.admin, true,
+            'is not admin');
+        assert.strictEqual(view.actions['add members to organization'], true,
+            'can add members to organization');
+        assert.strictEqual(view.actions['delete organization'], true,
+            'can delete organization');
+
+        done();
+      });
+    });
+
+    it('adds all actions to the view', function(done) {
+      var middleware = auth.can(
+          'add members to organization', 'delete organization');
+
+      var req = new EventEmitter();
+      req.url = '/org.1';
+      req.user = {
+        id: 'user.1'
+      };
+
+      middleware(req, {}, function(err) {
+        assert.lengthOf(arguments, 0, 'next called with no arguments');
+
+        var view = auth.view(req);
+
+        assert.strictEqual(view.entities.organization, organizations['org.1'],
+            'got organization');
+        assert.strictEqual(view.roles['organization.owner'], true,
+            'is organization.owner');
+        assert.strictEqual(view.roles.admin, false,
+            'is not admin');
+        assert.strictEqual(view.actions['add members to organization'], true,
+            'can add members to organization');
+        assert.strictEqual(view.actions['delete organization'], false,
+            'can delete organization');
 
         done();
       });

@@ -62,11 +62,13 @@ Now define what roles are required for your actions.
 
 ```js
 auth.action('add members to organization', ['admin', 'organization.owner']);
+auth.action('delete organization', ['admin']);
 ```
 
 To perform the provided action, a user must have at least one of the given
-roles.  In this case, a user must be `admin` or `organization.owner` to add
-members to an organization.
+roles.  In the first case, a user must be `admin` or `organization.owner` to add
+members to an organization.  In the second case, a user must be `admin` to be
+able to delete an organization.
 
 Note that entity and role getters can be added in any order, but you cannot
 configure actions until all entity and role getters have been added.
@@ -99,6 +101,31 @@ app.post(
       assert.strictEqual(view.can('add members to organization'), true);
       // pretend we added a member to the org
       res.send(202, 'member added');
+    });
+```
+
+If you have a view that might allow a user to perform multiple actions, you
+can create middleware that allows the view to be rendered if any of a list of
+actions are allowed.  In this case, the view will also have access to which
+specific actions are allowed so you can conditionally render page elements.
+
+```js
+app.get(
+    '/organizations/:orgId/manage', 
+    auth.can('add members to organization', 'delete organization'),
+    function(req, res, next) {
+      /**
+       * We've reached this point because the user can either add members or
+       * delete the organization.
+       */
+      var view = auth.view(req);
+      /**
+       * To determine which actions are allowed, call the `can` method (or
+       * inspect all of `view.actions`).
+       */
+      res.render('manage.html', {
+        actions: view.actions
+      });
     });
 ```
 
