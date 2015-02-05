@@ -46,6 +46,7 @@ auth.entity('organization', function(req, done) {
   var match = req.url.match(/^\/organizations\/(\w+)/);
   if (!match) {
     done(new Error('Expected url like /organizations/:orgId'));
+    return;
   }
   // pretend we're going to the db for the organization
   process.nextTick(function() {
