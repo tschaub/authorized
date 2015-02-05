@@ -45,7 +45,7 @@
     "watch": "grunt watch"
   },
   "dependencies": {
-    "async": "0.2.9",
+    "async": "0.9.0",
     "pause": "0.0.1"
   }
 }
