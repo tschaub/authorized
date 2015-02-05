@@ -146,6 +146,109 @@ app.use(function(err, req, res, next) {
 });
 ```
 
+## API
+
+```js
+var auth = require('authorized');
+```
+
+The `authorized` module exports a [`Manager`](#manager) instance with the
+methods below.
+
+### <a id='manager'>`Manager`</a>
+
+#### <a id='manager.role'>`role(role, getter)`</a>
+
+ * **role** `string` - Role name (e.g. 'organization.owner').
+ * **getter** `function(req, done)` - Function that determines if the current
+   user has the given role.  This function will be called with the request
+   object and a callback.  The callback has the form
+   `function(Error, boolean)` where the first argument is any error value
+   generated while checking for the given role and the second is a boolean
+   indicating whether the user has the role.
+
+Register a getter for a role.  If the role is a string of the form
+`entity.relation`, a getter for the entity must be registered with the
+[`entity`](#manager.entity) method.  Roles without `.` are "simple" roles (e.g.
+`"admin"`) and no entity is looked up.  Throws [`ConfigError`](#configerror) if
+called with an invalid role name.
+
+#### <a id='manager.entity'>`entity(type, getter)`</a>
+
+ * **type** {string} - Entity type (e.g. 'organization').
+ * **getter** `{function(req, done)` - Function called to get an entity from
+   the provided request.  The `done` function has the form
+   `function(Error, Object)` where the first argument is any error value
+   generated while getting the entity and the second is the target entity.
+
+Register a getter for an entity.  Throws [`ConfigError`](#configerror) if called
+with invalid arguments.
+
+#### <a id='manager.action'>`action(name, roles)`</a>
+
+ * **name** `string` - Action name (e.g. 'add member to organization').
+ * **roles** `Array.<string>`Roles allowed to perform this action.  If
+   the current user has any one of the supplied roles, they can perform the
+   action (e.g. ['admin', 'organization.owner']).
+
+Specify the roles that a user must have to perform the named action.  Throws
+[`ConfigError`](#configerror) if the provided roles have not yet been registered
+with the [`role`](#manager.role) method.
+
+#### <a id='manager.can'>`can(action)`</a>
+
+ * **action** `string` Action name (e.g. 'add members to organization').
+   May also be called with multiple action arguments.  Supplying '*' is an
+   alternative to specifying all actions.
+
+Create action based authorization middleware.  Returns a middleware function
+with the signature `function(IncomingMessage, ServerResponse, function)`.  An
+[`UnauthorizedError`](#unauthorizederror) will be passed to following middleware
+when the user is not authorized to perform the given action.  Throws
+[`ConfigError`](#configerror) if the provide action has not been registered
+with the [`action`](#manager.action) method.
+
+#### <a id='manager.view'>`view(req)`</a>
+
+ * **req** `Object` - The request object.
+
+Get cached authorization info for a request.  Returns a [`View`](#view)
+instance for accessing authorization info for the given request.
+
+### <a id='view'>`View`</a>
+
+#### <a id='view.can'>`can(action)`</a>
+
+ * **action** `string` - Action name.
+
+Returns a `boolean` indicating whether the given action may be performed.
+
+#### <a id='view.get'>`get(type)`</a>
+
+ * **type** `string` - The entity type.
+
+Returns the cached entity `Object` (or `null` if none found).
+
+#### <a id='view.has'>`has(role)`</a>
+
+ * **role** `string` - The role name.
+
+Returns a `boolean` indicating whether the current user has the given role.
+
+#### <a id='view.freeze'>`freeze()`</a>
+
+Freeze the view.  This prevents entities, actions, and roles from being
+modified.
+
+### <a id='configerror'>`ConfigError`</a>
+
+Thrown on configuration error.
+
+### <a id='unauthorizederror'>`UnauthorizedError`</a>
+
+Passed down the middleware chain when a user is not authorized to perform an
+action.
+
 ## What else?
 
 This package is strictly about authorization.  For a full-featured
