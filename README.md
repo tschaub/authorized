@@ -177,7 +177,7 @@ called with an invalid role name.
 #### <a id='manager.entity'>`entity(type, getter)`</a>
 
  * **type** {string} - Entity type (e.g. 'organization').
- * **getter** `{function(req, done)` - Function called to get an entity from
+ * **getter** `function(req, done)` - Function called to get an entity from
    the provided request.  The `done` function has the form
    `function(Error, Object)` where the first argument is any error value
    generated while getting the entity and the second is the target entity.
