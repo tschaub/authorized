@@ -1,4 +1,6 @@
 # Authorized!
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/tschaub/authorized.svg)](https://greenkeeper.io/)
 **Action based authorization middleware**
 
 The `authorized` package is available on [npm](https://npmjs.org/package/authorized).
