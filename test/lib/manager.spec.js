@@ -107,15 +107,24 @@ describe('Manager', function() {
         // pretend nobody is admin
         done(null, false);
       });
-      auth.role('page.author', function(page, req, done) {
-        // pretend everybody is author
-        done(null, true);
-      });
 
       assert.throws(function() {
         auth.action('can edit page', ['admin', 'page.author']);
       });
     });
+
+    it('throws when attempting to define action twice', function() {
+      auth.role('admin', function(req, done) {
+        done(null, false);
+      });
+
+      auth.action('can edit page', ['admin']);
+
+      assert.throws(function() {
+        auth.action('can edit page', ['admin']);
+      });
+    });
+
 
   });
 
@@ -318,6 +327,16 @@ describe('Manager', function() {
       }, ConfigError);
     });
 
+    it('throws when attempting to define entity twice', function() {
+      assert.doesNotThrow(function() {
+        auth.entity('page', (req, done) => done(null, {}));
+      });
+      assert.throws(() => {
+        auth.entity('page', (req, done) => done(null, {}));
+      });
+    });
+
+
   });
 
   describe('#role()', function() {
@@ -405,7 +424,15 @@ describe('Manager', function() {
       }, ConfigError);
     });
 
+    it('throws when attempting to define a role twice', function() {
+      auth.role('admin', function(req, done) {
+        // pretend nobody is admin
+        done(null, false);
+      });
+
+      assert.throws(() => {
+        auth.role('admin', (req, done) => done(null, false));
+      });
+    });
   });
-
-
 });

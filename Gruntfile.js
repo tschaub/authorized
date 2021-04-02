@@ -11,6 +11,7 @@ module.exports = function(grunt) {
   var testSrc = 'test/**/*.js';
 
   var lintOptions = {
+    esversion: 6,
     curly: true,
     eqeqeq: true,
     indent: 2,
