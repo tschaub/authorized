@@ -56,7 +56,8 @@ describe('Usage in Express app', function() {
       express.json(),
       function(req, res, next) {
         var view = auth.view(req);
-        res.send(202, {
+        res.status(202)
+           .send({
           roles: view.roles,
           entities: view.entities,
           actions: view.actions
@@ -65,7 +66,8 @@ describe('Usage in Express app', function() {
 
   app.use(function(err, req, res, next) {
     if (err instanceof UnauthorizedError) {
-      res.send(401, 'Unauthorized');
+      res.status(401)
+          .send('Unauthorized');
     } else {
       next(err);
     }
@@ -77,10 +79,8 @@ describe('Usage in Express app', function() {
 
       chai.request(app)
         .post('/organizations/org1/members')
-        .req(function(req) {
-            req.set('x-fake-user-id', 'user.1');
-          })
-        .res(function(res) {
+        .set('x-fake-user-id', 'user.1')
+        .end(function(err, res) {
             assert.strictEqual(res.status, 202);
             var body = res.body;
             assert.isFalse(body.roles.admin, 'not admin');
@@ -95,16 +95,10 @@ describe('Usage in Express app', function() {
 
       chai.request(app)
         .post('/organizations/org1/members')
-        .req(function(req) {
-            req.set('x-fake-user-id', 'user.2');
-          })
-        .res(function(res) {
-            assert.strictEqual(res.status, 401);
-          });
-
+        .set('x-fake-user-id', 'user.2')
+        .end(function(err, res) {
+          assert.strictEqual(res.status, 401);
+        });
     });
-
   });
-
-
 });

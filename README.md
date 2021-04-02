@@ -172,7 +172,7 @@ Register a getter for a role.  If the role is a string of the form
 `entity.relation`, a getter for the entity must be registered with the
 [`entity`](#manager.entity) method.  Roles without `.` are "simple" roles (e.g.
 `"admin"`) and no entity is looked up.  Throws [`ConfigError`](#configerror) if
-called with an invalid role name.
+called with an invalid or duplicate role name.
 
 #### <a id='manager.entity'>`entity(type, getter)`</a>
 
@@ -183,7 +183,7 @@ called with an invalid role name.
    generated while getting the entity and the second is the target entity.
 
 Register a getter for an entity.  Throws [`ConfigError`](#configerror) if called
-with invalid arguments.
+with invalid arguments or duplicate entity name.
 
 #### <a id='manager.action'>`action(name, roles)`</a>
 
@@ -194,7 +194,7 @@ with invalid arguments.
 
 Specify the roles that a user must have to perform the named action.  Throws
 [`ConfigError`](#configerror) if the provided roles have not yet been registered
-with the [`role`](#manager.role) method.
+with the [`role`](#manager.role) method or if the action name is a duplicate.
 
 #### <a id='manager.can'>`can(action)`</a>
 
