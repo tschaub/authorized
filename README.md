@@ -158,6 +158,11 @@ methods below.
 
 ### <a id='manager'>`Manager`</a>
 
+To create a new Manager instance use `new auth.Manager();`
+
+For many projects this is not required as the single instance exported by default is
+sufficient.
+
 #### <a id='manager.role'>`role(role, getter)`</a>
 
  * **role** `string` - Role name (e.g. 'organization.owner').
@@ -249,6 +254,47 @@ Thrown on configuration error.
 
 Passed down the middleware chain when a user is not authorized to perform an
 action.
+
+## Using `authorized` in large projects
+
+The `authorized` module exports a singleton object. For large projects, you may want to
+to create multiple instances of `authorized` and possibly share code between them.
+
+For a complete separate instance use `new auth.Manager();`.
+
+You may also want to add some default entities, roles and actions of your own which then share
+with independent instances. Here's a pattern you can use to solve that.
+
+Create a sub-class which calls an `initialize()` method in the constructorl
+and then add custom additions there:
+
+```javascript
+var Authorized = require('authorized')
+
+// Extend authorized with some roles, entities and actions that are always available.
+class CorpAuthorized extends Authorized.Manager {
+  constructor(options) {
+    super(options);
+    this.initialize();
+  }
+
+  initialize() {
+    const auth = this;
+    auth.entity('admin', (req,done)=>{
+        // Custom logic goes here
+        return done();
+      }
+    })
+module.exports = CorpAuthorized;
+
+// ...
+
+const Manager = require('./path/to/your/subclass');
+
+// Each instance now has a unique instance with your default rules.
+const auth = new Authorized.Manager();
+
+```
 
 ## What else?
 
